@@ -23,12 +23,12 @@ function auto(){
   <p><?php echo $text_success; ?></p>
   <p style="color:green"><?php echo $payment_details; ?></p>
   <p><?php echo 'Your Order No. is:'.$text_order_number; ?></p>
-  <?php if($op_alipay_location == 1) { ?>
-  <p><?php echo 'Outlet Location:'.$op_alipay_locations; ?></p>
+  <?php if($op_alipayHK_location == 1) { ?>
+  <p><?php echo 'Outlet Location:'.$op_alipayHK_locations; ?></p>
   <?php  }?>
 
-  <?php if($op_alipay_location == 1) { ?>
-  <p><?php echo 'Entity:'.$op_alipay_entitys; ?></p>
+  <?php if($op_alipayHK_location == 1) { ?>
+  <p><?php echo 'Entity:'.$op_alipayHK_entitys; ?></p>
   <?php  }?>
 
   <p><?php echo $text_success_wait; ?></p>

@@ -1,12 +1,12 @@
 <?php
 // Heading
-$_['heading_title']      	= 'Oceanpayment AliPay Payment';
+$_['heading_title']      	= 'Oceanpayment AliPayHK Payment';
 
 // Text 
 $_['text_payment']       	= 'Payment';
-$_['text_success']       	= 'Success: You have modified AliPay account details!';
-$_['text_edit']          	= 'Edit Oceanpayment AliPay Payment';
-$_['text_op_alipay'] 	= '<img src="view/image/payment/op_alipay.png" alt="AliPay" height="25"  title="AliPay" style="border: 1px solid #EEEEEE;" />';
+$_['text_success']       	= 'Success: You have modified AliPayHK account details!';
+$_['text_edit']          	= 'Edit Oceanpayment AliPayHK Payment';
+$_['text_op_alipayHK'] 	= '<img src="view/image/payment/op_alipayHK.png" alt="AliPay" height="25"  title="AliPay" style="border: 1px solid #EEEEEE;" />';
 $_['text_pay']           	= 'https://secure.oceanpayment.com/gateway/service/pay';
 $_['text_test']          	= 'https://secure.oceanpayment.com/gateway/service/test';
 $_['text_pay_iframe']    	= 'Iframe';
@@ -48,7 +48,7 @@ $_['entry_entitys']           = 'Entity';
 
 
 // Error
-$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment AliPay!';
+$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment AliPayHK!';
 $_['error_account']                   = 'Account Required!';
 $_['error_terminal']                  = 'Terminal Required!';
 $_['error_securecode']                = 'Securecode Required!';
