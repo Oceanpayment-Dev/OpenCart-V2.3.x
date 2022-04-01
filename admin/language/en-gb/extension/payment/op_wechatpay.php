@@ -1,20 +1,12 @@
 <?php
-/*
- * @Descripttion: 
- * @version: 
- * @Author: Steven
- * @Date: 2021-06-15 10:45:48
- * @LastEditors: Steven
- * @LastEditTime: 2021-06-15 11:06:32
- */
 // Heading
-$_['heading_title']      	= 'Oceanpayment Klarna Payment';
+$_['heading_title']      	= 'Oceanpayment WechatPay Payment';
 
 // Text 
 $_['text_payment']       	= 'Payment';
-$_['text_success']       	= 'Success: You have modified klarna account details!';
-$_['text_edit']          	= 'Edit Oceanpayment Klarna Payment';
-$_['text_op_klarna'] 	= '<img src="https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg" alt="klarna" height="25"  title="klarna" style="border: 1px solid #EEEEEE;" />';
+$_['text_success']       	= 'Success: You have modified WechatPay account details!';
+$_['text_edit']          	= 'Edit Oceanpayment WechatPay Payment';
+$_['text_op_wechatpay'] 	= '<img src="view/image/payment/op_wechatpay.png" alt="WechatPay" height="25"  title="WechatPay" style="border: 1px solid #EEEEEE;" />';
 $_['text_pay']           	= 'https://secure.oceanpayment.com/gateway/service/pay';
 $_['text_test']          	= 'https://secure.oceanpayment.com/gateway/service/test';
 $_['text_pay_iframe']    	= 'Iframe';
@@ -56,7 +48,7 @@ $_['entry_entitys']           = 'Entity';
 
 
 // Error
-$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment klarna!';
+$_['error_permission']                = 'Warning: You do not have permission to modify Oceanpayment WechatPay!';
 $_['error_account']                   = 'Account Required!';
 $_['error_terminal']                  = 'Terminal Required!';
 $_['error_securecode']                = 'Securecode Required!';
