@@ -1,10 +1,18 @@
 <?php
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: Steven
+ * @Date: 2021-06-15 10:45:49
+ * @LastEditors: Steven
+ * @LastEditTime: 2021-06-15 11:14:32
+ */
 // Heading
 $_['heading_title']     = 'Thank you for shopping with %s .... ';
 
 // Text
-$_['text_title']        = 'AliPayHK Payment <br/><img src="catalog/view/theme/default/image/op_alipayHK.png" alt="AliPayHK">';
-$_['text_response']     = 'Response from AliPayHK:';
+$_['text_title']        = 'Klarna Payment <br/><img src="https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg" alt="Klarna">';
+$_['text_response']     = 'Response from Klarna:';
 $_['text_success']      = 'Your payment was successfully received.';
 $_['text_success_wait'] = 'whilst we finish processing your order.<br>If you are not automatically re-directed in 10 seconds, please click <a href="%s" target="_top" >here</a>.';
 $_['text_failure']      = 'Your payment has been cancelled!';

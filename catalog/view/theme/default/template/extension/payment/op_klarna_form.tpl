@@ -3,7 +3,7 @@
         <img src="catalog/view/theme/default/image/loading.gif"  />
     </div>
 </div>
-<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_alipay" name="checkout_alipay">
+<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_klarna" name="checkout_klarna">
   <input type="hidden" name="account" value="<?php echo $account; ?>" />
   <input type="hidden" name="terminal" value="<?php echo $terminal; ?>" />
   <input type="hidden" name="order_number" value="<?php echo $order_number; ?>" />
@@ -31,6 +31,7 @@
   <input type="hidden" name="ship_state" value="<?php echo $ship_state; ?>" />
   <input type="hidden" name="ship_country" value="<?php echo $ship_country; ?>" />
   <input type="hidden" name="ship_addr" value="<?php echo $ship_addr; ?>" />
+  <input type="hidden" name="itemList" value='<?php echo $itemList; ?>' />
   <input type="hidden" name="productName" value="<?php echo $productName; ?>" />
   <input type="hidden" name="productSku" value="<?php echo $productSku; ?>" />
   <input type="hidden" name="productNum" value="<?php echo $productNum; ?>" />
@@ -42,6 +43,6 @@
 </form>
 
 <script type="text/javascript">
-	document.getElementById('checkout_alipay').submit();
+	document.getElementById('checkout_klarna').submit();
 </script>
 

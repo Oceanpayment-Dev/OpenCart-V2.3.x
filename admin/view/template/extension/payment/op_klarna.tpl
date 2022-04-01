@@ -3,7 +3,7 @@
   <div class="page-header">
     <div class="container-fluid">
       <div class="pull-right">
-        <button type="submit" form="form-op_alipayHK" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <button type="submit" form="form-op_klarna" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
         <a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
       <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
@@ -24,11 +24,11 @@
 	    <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_edit; ?></h3>
 	  </div>
 	  <div class="panel-body">
-	 	 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-op_alipayHK" class="form-horizontal">
+	 	 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-op_klarna" class="form-horizontal">
 	 	 	<div class="form-group required">
 	            <label class="col-sm-2 control-label" for="input-account"><?php echo $entry_account; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_alipayHK_account" value="<?php echo $op_alipayHK_account; ?>" placeholder="<?php echo $entry_account; ?>" id="input-account" class="form-control" />
+	              <input type="text" name="op_klarna_account" value="<?php echo $op_klarna_account; ?>" placeholder="<?php echo $entry_account; ?>" id="input-account" class="form-control" />
 	              <?php if ($error_account) { ?>
 	              <div class="text-danger"><?php echo $error_account; ?></div>
 	              <?php } ?>
@@ -37,7 +37,7 @@
 	        <div class="form-group required">
 	            <label class="col-sm-2 control-label" for="input-terminal"><?php echo $entry_terminal; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_alipayHK_terminal" value="<?php echo $op_alipayHK_terminal; ?>" placeholder="<?php echo $entry_terminal; ?>" id="input-terminal" class="form-control" />
+	              <input type="text" name="op_klarna_terminal" value="<?php echo $op_klarna_terminal; ?>" placeholder="<?php echo $entry_terminal; ?>" id="input-terminal" class="form-control" />
 	              <?php if ($error_terminal) { ?>
 	              <div class="text-danger"><?php echo $error_terminal; ?></div>
 	              <?php } ?>
@@ -46,24 +46,97 @@
 	        <div class="form-group required">
 	            <label class="col-sm-2 control-label" for="input-securecode"><?php echo $entry_securecode; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_alipayHK_securecode" value="<?php echo $op_alipayHK_securecode; ?>" placeholder="<?php echo $entry_securecode; ?>" id="input-securecode" class="form-control" />
+	              <input type="text" name="op_klarna_securecode" value="<?php echo $op_klarna_securecode; ?>" placeholder="<?php echo $entry_securecode; ?>" id="input-securecode" class="form-control" />
 	              <?php if ($error_securecode) { ?>
 	              <div class="text-danger"><?php echo $error_securecode; ?></div>
 	              <?php } ?>
 	            </div>
 	        </div>
+	        <!-- 3D功能区  -->
+	        <div class="form-group">
+	            <label class="col-sm-2 control-label" for="input-3d"><?php echo $entry_3d; ?></label>
+	            <div class="col-sm-10">
+	              <select name="op_klarna_3d" id="op_klarna_3d" class="form-control" onchange="is_3d(this.value)">
+	                <?php if ($op_klarna_3d == 1) { ?>
+	                <option value="1" selected="selected"><?php echo $text_3d_on; ?></option>
+	                <?php } else { ?>
+	                <option value="1"><?php echo $text_3d_on; ?></option>
+	                <?php } ?>
+	                
+	                <?php if ($op_klarna_3d ==0) { ?>
+	                <option value="0" selected="selected"><?php echo $text_3d_off; ?></option>
+	                <?php } else { ?>
+	                <option value="0"><?php echo $text_3d_off; ?></option>
+	                <?php } ?>
+	              </select>
+	            </div>
+	        </div>
+	        <div class="form-group 3d_div">
+	            <label class="col-sm-2 control-label" for="input-3d-terminal"><?php echo $entry_3d_terminal; ?></label>
+	            <div class="col-sm-10">
+	              <input type="text" name="op_klarna_3d_terminal" value="<?php echo $op_klarna_3d_terminal; ?>" placeholder="<?php echo $entry_3d_terminal; ?>" id="input-3d-terminal" class="form-control" />
+	            </div>
+	        </div>
+	        <div class="form-group 3d_div">
+	            <label class="col-sm-2 control-label" for="input-3d-securecode"><?php echo $entry_3d_securecode; ?></label>
+	            <div class="col-sm-10">
+	              <input type="text" name="op_klarna_3d_securecode" value="<?php echo $op_klarna_3d_securecode; ?>" placeholder="<?php echo $entry_3d_securecode; ?>" id="input-3d-securecode" class="form-control" />
+	            </div>
+	        </div>
+	        <div class="form-group 3d_div">
+	            <label class="col-sm-2 control-label" for="input-currencies"><?php echo $entry_currencies; ?></label>
+	            <div class="col-sm-10">
+	              <select name="op_klarna_currencies" id="input-currencies" class="form-control" onchange="show_currency_value(this.value)">
+	                <option value="0"><?php echo $text_select_currency; ?></option>
+	                <?php foreach ($currencies as $currency) { ?>
+	                <option value="<?php echo $currency; ?>" ><?php echo $currency; ?></option>
+	                <?php } ?>
+	              </select>
+	            </div>
+	        </div>
+	        <div class="form-group 3d_div">
+	            <label class="col-sm-2 control-label" for="input-currencies-value"><?php echo $entry_currencies_value; ?></label>
+	            <div class="col-sm-10">
+	            	<?php foreach ($currencies as $currency) { ?>
+	              	<input type="text" class="currencies_value form-control" style="display:none" id="<?php echo $currency; ?>_value" name="op_klarna_currencies_value[<?php echo $currency; ?>]" value="<?php echo $op_klarna_currencies_value[$currency]; ?>"  />
+	           		<?php } ?>
+	            </div>
+	        </div>
+	        <div class="form-group 3d_div">
+			    <label class="col-sm-2 control-label"><?php echo $entry_countries; ?></label>
+			    <div class="col-sm-10">
+			      <div class="well well-sm" style="height: 150px; overflow: auto;">
+				<?php foreach ($countries as $country) { ?>
+				<div class="checkbox" style="width: 40%; float: left;">
+				  <label>
+				    <?php if (in_array($country['country_id'], $op_klarna_country_array)) { ?>
+				    <input type="checkbox" name="op_klarna_country_array[]" value="<?php echo $country['country_id']; ?>" checked="checked" />
+				    <?php echo $country['name']; ?>
+				    <?php } else { ?>
+				    <input type="checkbox" name="op_klarna_country_array[]" value="<?php echo $country['country_id']; ?>" />
+				    <?php echo $country['name']; ?>
+				    <?php } ?>
+				  </label>
+				</div>
+				<?php } ?>
+			      </div>
+			      <a onclick="$(this).parent().find(':checkbox').prop('checked', true);"><?php echo $text_select_all; ?></a> / <a onclick="$(this).parent().find(':checkbox').prop('checked', false);"><?php echo $text_unselect_all; ?></a></div>
+			</div>
+	        <!-- 3D功能区  -->
+	        
+	        
 	        
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-transaction"><?php echo $entry_transaction; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_transaction" id="input-transaction" class="form-control">
-	                <?php if ($op_alipayHK_transaction == $text_pay) { ?>
+	              <select name="op_klarna_transaction" id="input-transaction" class="form-control">
+	                <?php if ($op_klarna_transaction == $text_pay) { ?>
 	                <option value="<?php echo $text_pay; ?>" selected="selected"><?php echo $text_pay; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $text_pay; ?>"><?php echo $text_pay; ?></option>
 	                <?php } ?>
 	                
-	                <?php if ($op_alipayHK_transaction == $text_test) { ?>
+	                <?php if ($op_klarna_transaction == $text_test) { ?>
 	                <option value="<?php echo $text_test; ?>" selected="selected"><?php echo $text_test; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $text_test; ?>"><?php echo $text_test; ?></option>
@@ -74,14 +147,14 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-pay-mode"><?php echo $entry_pay_mode; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_pay_mode" id="input-pay-mode" class="form-control">
-	                <?php if ($op_alipayHK_pay_mode == 1) { ?>
+	              <select name="op_klarna_pay_mode" id="input-pay-mode" class="form-control">
+	                <?php if ($op_klarna_pay_mode == 1) { ?>
 	                <option value="1" selected="selected"><?php echo $text_pay_iframe; ?></option>
 	                <?php } else { ?>
 	                <option value="1"><?php echo $text_pay_iframe; ?></option>
 	                <?php } ?>
 	                
-	                <?php if ($op_alipayHK_pay_mode == 0) { ?>
+	                <?php if ($op_klarna_pay_mode == 0) { ?>
 	                <option value="0" selected="selected"><?php echo $text_pay_redirect; ?></option>
 	                <?php } else { ?>
 	                <option value="0"><?php echo $text_pay_redirect; ?></option>
@@ -92,9 +165,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-default-order-status"><?php echo $entry_default_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_default_order_status_id" id="input-default-order-status" class="form-control">
+	              <select name="op_klarna_default_order_status_id" id="input-default-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_alipayHK_default_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_klarna_default_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -106,9 +179,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-success-order-status"><?php echo $entry_success_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_success_order_status_id" id="input-success-order-status" class="form-control">
+	              <select name="op_klarna_success_order_status_id" id="input-success-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_alipayHK_success_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_klarna_success_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -120,9 +193,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-failed-order-status"><?php echo $entry_failed_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_failed_order_status_id" id="input-failed-order-status" class="form-control">
+	              <select name="op_klarna_failed_order_status_id" id="input-failed-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_alipayHK_failed_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_klarna_failed_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -134,9 +207,9 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-pending-order-status"><?php echo $entry_pending_order_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_pending_order_status_id" id="input-pending-order-status" class="form-control">
+	              <select name="op_klarna_pending_order_status_id" id="input-pending-order-status" class="form-control">
 	                <?php foreach ($order_statuses as $order_status) { ?>
-	                <?php if ($order_status['order_status_id'] == $op_alipayHK_pending_order_status_id) { ?>
+	                <?php if ($order_status['order_status_id'] == $op_klarna_pending_order_status_id) { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
@@ -148,10 +221,10 @@
 			<div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-geo-zone"><?php echo $entry_geo_zone; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_geo_zone_id" id="input-geo-zone" class="form-control">
+	              <select name="op_klarna_geo_zone_id" id="input-geo-zone" class="form-control">
 	                <option value="0"><?php echo $text_all_zones; ?></option>
 	                <?php foreach ($geo_zones as $geo_zone) { ?>
-	                <?php if ($geo_zone['geo_zone_id'] == $op_alipayHK_geo_zone_id) { ?>
+	                <?php if ($geo_zone['geo_zone_id'] == $op_klarna_geo_zone_id) { ?>
 	                <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
 	                <?php } else { ?>
 	                <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
@@ -163,8 +236,8 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-status"><?php echo $entry_status; ?></label>
 	            <div class="col-sm-10">
-	              <select name="op_alipayHK_status" id="input-status" class="form-control">
-	                <?php if ($op_alipayHK_status) { ?>
+	              <select name="op_klarna_status" id="input-status" class="form-control">
+	                <?php if ($op_klarna_status) { ?>
 	                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
 	                <option value="0"><?php echo $text_disabled; ?></option>
 	                <?php } else { ?>
@@ -177,7 +250,7 @@
 	        <div class="form-group">
 	            <label class="col-sm-2 control-label" for="input-sort-order"><?php echo $entry_sort_order; ?></label>
 	            <div class="col-sm-10">
-	              <input type="text" name="op_alipayHK_sort_order" value="<?php echo $op_alipayHK_sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
+	              <input type="text" name="op_klarna_sort_order" value="<?php echo $op_klarna_sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
 	            </div>
 	        </div>
 			
@@ -185,8 +258,8 @@
 			<div class="form-group">
 			 <label class="col-sm-2 control-label" for="input-location"><?php echo $entry_location; ?></label>
 			 <div class="col-sm-10">
-				<select name="op_alipayHK_location" id="input-location" class="form-control">
-				   <?php if ($op_alipayHK_location) { ?>
+				<select name="op_klarna_location" id="input-location" class="form-control">
+				   <?php if ($op_klarna_location) { ?>
 				   <option value="1" selected="selected"><?php echo $text_show; ?></option>
 				   <option value="0"><?php echo $text_hide; ?></option>
 				   <?php } else { ?>
@@ -199,14 +272,14 @@
 			<div class="form-group ">
 			 <label class="col-sm-2 control-label" for="input-locations"><?php echo $entry_locations; ?></label>
 			 <div class="col-sm-10">
-				<input type="text" name="op_alipayHK_locations" value="<?php echo $op_alipayHK_locations; ?>" placeholder="<?php echo $entry_locations; ?>" id="input-terminal" class="form-control" />
+				<input type="text" name="op_klarna_locations" value="<?php echo $op_klarna_locations; ?>" placeholder="<?php echo $entry_locations; ?>" id="input-terminal" class="form-control" />
 			 </div>
 			</div>
 			<div class="form-group">
 			 <label class="col-sm-2 control-label" for="input-entity"><?php echo $entry_entity; ?></label>
 			 <div class="col-sm-10">
-				<select name="op_alipayHK_entity" id="input-location" class="form-control">
-				   <?php if ($op_alipayHK_entity) { ?>
+				<select name="op_klarna_entity" id="input-location" class="form-control">
+				   <?php if ($op_klarna_entity) { ?>
 				   <option value="1" selected="selected"><?php echo $text_shows; ?></option>
 				   <option value="0"><?php echo $text_hides; ?></option>
 				   <?php } else { ?>
@@ -219,7 +292,7 @@
 			<div class="form-group ">
 			 <label class="col-sm-2 control-label" for="input-entitys"><?php echo $entry_entitys; ?></label>
 			 <div class="col-sm-10">
-				<input type="text" name="op_alipayHK_entitys" value="<?php echo $op_alipayHK_entitys; ?>" placeholder="<?php echo $entry_entitys; ?>" id="input-terminal" class="form-control" />
+				<input type="text" name="op_klarna_entitys" value="<?php echo $op_klarna_entitys; ?>" placeholder="<?php echo $entry_entitys; ?>" id="input-terminal" class="form-control" />
 			 </div>
 			</div>
 
@@ -241,7 +314,7 @@
 		}
 	}
 	
-	if($("#op_alipayHK_3d").val() == 1){
+	if($("#op_klarna_3d").val() == 1){
 		$(".3d_div").show();
 	}else{
 		$(".3d_div").hide();
