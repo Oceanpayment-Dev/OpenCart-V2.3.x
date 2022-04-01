@@ -17,7 +17,7 @@ function auto(){
 <div style="text-align: center;">
   <p><?php echo $text_response; ?></p>
   <div style="border: 1px solid #DDDDDD; margin-bottom: 20px; width: 350px; margin-left: auto; margin-right: auto;">
-    <wechatpay ITEM=banner>
+    <creditcard ITEM=banner>
   </div>
   <p><?php echo $text_failure; ?></p>
   <p style="color:red"><?php echo $payment_details; ?></p>

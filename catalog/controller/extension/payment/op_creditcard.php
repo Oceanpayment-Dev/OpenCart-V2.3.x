@@ -1,6 +1,6 @@
 <?php
 
-class ControllerExtensionPaymentOPWechatPay extends Controller {
+class ControllerExtensionPaymentOPCreditCard extends Controller {
 	
 	const PUSH 			= "[PUSH]";
 	const BrowserReturn = "[Browser Return]";	
@@ -12,16 +12,16 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 		
 		
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['action'] = 'index.php?route=extension/payment/op_wechatpay/op_wechatpay_form';
+		$data['action'] = 'index.php?route=extension/payment/op_creditcard/op_creditcard_form';
 		
 		
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		
-		return $this->load->view('extension/payment/op_wechatpay.tpl', $data);
+		return $this->load->view('extension/payment/op_creditcard.tpl', $data);
 	}
 
 	
-	public function op_wechatpay_form() {
+	public function op_creditcard_form() {
 		
 		$this->load->model('checkout/order');
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -30,13 +30,13 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 		//判断是否为空订单
 		if (!empty($order_info)) {
 			
-			$this->load->model('extension/payment/op_wechatpay');
-			$product_info = $this->model_extension_payment_op_wechatpay->getOrderProducts($this->session->data['order_id']);
+			$this->load->model('extension/payment/op_creditcard');
+			$product_info = $this->model_extension_payment_op_creditcard->getOrderProducts($this->session->data['order_id']);
 			
 			//获取订单详情
 			$productDetails = $this->getProductItems($product_info);
 			//获取消费者详情
-			$customer_info = $this->model_extension_payment_op_wechatpay->getCustomerDetails($order_info['customer_id']);
+			$customer_info = $this->model_extension_payment_op_creditcard->getCustomerDetails($order_info['customer_id']);
 			
 			
 			if (!$this->request->server['HTTPS']) {
@@ -46,7 +46,7 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			}
 			
 			//提交网关
-			$action = $this->config->get('op_wechatpay_transaction');
+			$action = $this->config->get('op_creditcard_transaction');
 			$data['action'] = $action;
 			
 			//订单号
@@ -65,17 +65,17 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			$_SESSION['is_3d'] = 0;
 			
 			//判断是否启用3D功能
-			if($this->config->get('op_wechatpay_3d') == 1){
+			if($this->config->get('op_creditcard_3d') == 1){
 				//检验是否需要3D验证
 				$validate_arr = $this->validate3D($order_currency, $order_amount, $order_info);							
 			}else{
-				$validate_arr['terminal'] = $this->config->get('op_wechatpay_terminal');
-				$validate_arr['securecode'] = $this->config->get('op_wechatpay_securecode');
+				$validate_arr['terminal'] = $this->config->get('op_creditcard_terminal');
+				$validate_arr['securecode'] = $this->config->get('op_creditcard_securecode');
 			}
 			
 		
 			//商户号
-			$account = $this->config->get('op_wechatpay_account');
+			$account = $this->config->get('op_creditcard_account');
 			$data['account'] = $account;
 				
 			//终端号
@@ -87,11 +87,11 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			
 			
 			//返回地址
-			$backUrl = $base_url.'index.php?route=extension/payment/op_wechatpay/callback';
+			$backUrl = $base_url.'index.php?route=extension/payment/op_creditcard/callback';
 			$data['backUrl'] = $backUrl;
 			
 			//服务器响应地址
-			$noticeUrl = $base_url.'index.php?route=extension/payment/op_wechatpay/notice';
+			$noticeUrl = $base_url.'index.php?route=extension/payment/op_creditcard/notice';
 			$data['noticeUrl'] = $noticeUrl;
 			
 			//备注
@@ -99,7 +99,7 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			$data['order_notes'] = $_COOKIE['PHPSESSID'];
 			
 			//支付方式
-			$methods = $this->Source();
+			$methods = "Credit Card";
 			$data['methods'] = $methods;
 			
 			//账单人名
@@ -280,12 +280,12 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			$data['header'] = $this->load->controller('common/header');
 			
 			//支付模式Pay Mode
-			if($this->config->get('op_wechatpay_pay_mode') == 1){
+			if($this->config->get('op_creditcard_pay_mode') == 1){
 				//内嵌Iframe
-				$this->response->setOutput($this->load->view('extension/payment/op_wechatpay_iframe.tpl', $data));	
+				$this->response->setOutput($this->load->view('extension/payment/op_creditcard_iframe.tpl', $data));	
 			}else{
 				//跳转Redirect
-				$this->response->setOutput($this->load->view('extension/payment/op_wechatpay_form.tpl', $data));
+				$this->response->setOutput($this->load->view('extension/payment/op_creditcard_form.tpl', $data));
 			}
 
 		}else{		
@@ -298,7 +298,7 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 	
 	public function callback() {
 		if (isset($this->request->post['order_number']) && !(empty($this->request->post['order_number']))) {
-			$this->language->load('extension/payment/op_wechatpay');
+			$this->language->load('extension/payment/op_creditcard');
 		
 			$data['title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
 
@@ -327,7 +327,7 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			
 	
 			//返回信息
-			$account = $this->config->get('op_wechatpay_account');
+			$account = $this->config->get('op_creditcard_account');
 			$terminal = $this->request->post['terminal'];
 			$response_type = $this->request->post['response_type'];
 			$payment_id = $this->request->post['payment_id'];
@@ -355,31 +355,31 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			
 			
 			//匹配终端号   记录是否3D交易
-			if($terminal == $this->config->get('op_wechatpay_terminal')){
+			if($terminal == $this->config->get('op_creditcard_terminal')){
 				//普通终端号
-				$securecode = $this->config->get('op_wechatpay_securecode');		
+				$securecode = $this->config->get('op_creditcard_securecode');		
 				$text_is_3d = '';
-			}elseif($terminal == $this->config->get('op_wechatpay_3d_terminal')){
+			}elseif($terminal == $this->config->get('op_creditcard_3d_terminal')){
 				//3D终端号
-				$securecode = $this->config->get('op_wechatpay_3d_securecode');	
+				$securecode = $this->config->get('op_creditcard_3d_securecode');	
 				$text_is_3d = '[3D] ';
 			}else{				
 				$securecode = '';	
 				$text_is_3d = '';
 			}
 			
-			if($this->config->get('op_wechatpay_location') == '1'){
-				$data['op_wechatpay_locations']  =	$this->config->get('op_wechatpay_locations');
-                $data['op_wechatpay_location']   = 1;
+			if($this->config->get('op_creditcard_location') == '1'){
+				$data['op_creditcard_locations']  =	$this->config->get('op_creditcard_locations');
+                $data['op_creditcard_location']   = 1;
 			}else{
-                $data['op_wechatpay_location']   = 0;
+                $data['op_creditcard_location']   = 0;
 			}
 
-            if($this->config->get('op_wechatpay_entity') == '1'){
-                $data['op_wechatpay_entitys']  =	 $this->config->get('op_wechatpay_entitys');
-                $data['op_wechatpay_entity']   = 1;
+            if($this->config->get('op_creditcard_entity') == '1'){
+                $data['op_creditcard_entitys']  =	 $this->config->get('op_creditcard_entitys');
+                $data['op_creditcard_entity']   = 1;
 			}else{
-                $data['op_wechatpay_entity']   = 0;
+                $data['op_creditcard_entity']   = 0;
 			}
 
 				
@@ -418,7 +418,7 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 					if($ErrorCode == 20061){	 
 						//排除订单号重复(20061)的交易
 						$data['continue'] = $this->url->link('checkout/cart');
-						$this->response->setOutput($this->load->view('extension/payment/op_wechatpay_failure.tpl', $data));
+						$this->response->setOutput($this->load->view('extension/payment/op_creditcard_failure.tpl', $data));
 
 					}else{
 						if ($payment_status == 1 ){  
@@ -426,10 +426,10 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 							//清除coupon
 							unset($this->session->data['coupon']);
 							
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_wechatpay_success_order_status_id'), $message, true);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_success_order_status_id'), $message, true);
 							
 							$data['continue'] = HTTPS_SERVER . 'index.php?route=checkout/success';
-							$this->response->setOutput($this->load->view('extension/payment/op_wechatpay_success.tpl', $data));
+							$this->response->setOutput($this->load->view('extension/payment/op_creditcard_success.tpl', $data));
 
 						}elseif ($payment_status == -1 ){   
 							//交易待处理 
@@ -437,17 +437,17 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 							if($payment_authType == 1){						
 								$message .= '(Pre-auth)';
 							}
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_wechatpay_pending_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_pending_order_status_id'), $message, false);
 								
 							$data['continue'] = $this->url->link('checkout/cart');
-							$this->response->setOutput($this->load->view('extension/payment/op_wechatpay_success.tpl', $data));
+							$this->response->setOutput($this->load->view('extension/payment/op_creditcard_success.tpl', $data));
 	
 						}else{     
 							//交易失败
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_wechatpay_failed_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_failed_order_status_id'), $message, false);
 							
 							$data['continue'] = $this->url->link('checkout/cart');
-							$this->response->setOutput($this->load->view('extension/payment/op_wechatpay_failure.tpl', $data));
+							$this->response->setOutput($this->load->view('extension/payment/op_creditcard_failure.tpl', $data));
 
 						}
  					}								
@@ -455,10 +455,10 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 			
 			}else {     
 				//数据签名对比失败
-				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_wechatpay_failed_order_status_id'), $message, false);
+				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_creditcard_failed_order_status_id'), $message, false);
 							
 				$data['continue'] = $this->url->link('checkout/cart');
-				$this->response->setOutput($this->load->view('extension/payment/op_wechatpay_failure.tpl', $data));
+				$this->response->setOutput($this->load->view('extension/payment/op_creditcard_failure.tpl', $data));
 					
 			}
 		}
@@ -500,13 +500,13 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 				
 					
 			//匹配终端号   记录是否3D交易
-			if($_REQUEST['terminal'] == $this->config->get('op_wechatpay_terminal')){
+			if($_REQUEST['terminal'] == $this->config->get('op_creditcard_terminal')){
 				//普通终端号
-				$securecode = $this->config->get('op_wechatpay_securecode');
+				$securecode = $this->config->get('op_creditcard_securecode');
 				$text_is_3d = '';
-			}elseif($_REQUEST['terminal'] == $this->config->get('op_wechatpay_3d_terminal')){
+			}elseif($_REQUEST['terminal'] == $this->config->get('op_creditcard_3d_terminal')){
 				//3D终端号
-				$securecode = $this->config->get('op_wechatpay_3d_securecode');
+				$securecode = $this->config->get('op_creditcard_3d_securecode');
 				$text_is_3d = '[3D] ';
 			}else{
 				$securecode = '';
@@ -558,17 +558,17 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 				}else{
 					if ($_REQUEST['payment_status'] == 1 ){
 						//交易成功
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_wechatpay_success_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_creditcard_success_order_status_id'), $message, false);
 					}elseif ($_REQUEST['payment_status'] == -1){
 						//交易待处理
 						//是否预授权交易
 						if($_REQUEST['payment_authType'] == 1){
 							$message .= '(Pre-auth)';
 						}
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_wechatpay_pending_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_creditcard_pending_order_status_id'), $message, false);
 					}else{
 						//交易失败
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_wechatpay_failed_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_creditcard_failed_order_status_id'), $message, false);
 					}
 				}
 				
@@ -581,61 +581,6 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 	
 			
 	}
-
-	/**
-     * 检验是否移动端
-     */
-    function isMobile(){
-        // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
-        if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
-            return true;
-        }
-        // 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
-        if (isset ($_SERVER['HTTP_VIA'])){
-            // 找不到为flase,否则为true
-            return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
-        }
-        // 判断手机发送的客户端标志
-        if (isset ($_SERVER['HTTP_USER_AGENT'])){
-            $clientkeywords = array (
-                'nokia','sony','ericsson','mot','samsung','htc','sgh','lg','sharp','sie-','philips','panasonic','alcatel',
-                'lenovo','iphone','ipod','blackberry','meizu','android','netfront','symbian','ucweb','windowsce','palm',
-                'operamini','operamobi','openwave','nexusone','cldc','midp','wap','mobile'
-            );
-            // 从HTTP_USER_AGENT中查找手机浏览器的关键字
-            if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))){
-                return true;
-            }
-        }
-        // 判断协议
-        if (isset ($_SERVER['HTTP_ACCEPT'])){
-            // 如果只支持wml并且不支持html那一定是移动设备
-            // 如果支持wml和html但是wml在html之前则是移动设备
-            if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))){
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * 判断终端来源
-     */
-    function Source(){
-        //是否移动端
-        if($this->isMobile()){
-            if(strpos($_SERVER['HTTP_USER_AGENT'],'MicroMessenger') !== false){            
-                //公众号
-                return 'WeChatPay_Acc';            
-            }else{
-                //H5
-                return 'WeChatPay_Wap';
-            }    
-        }else{
-            //pc
-            return 'WeChatPay_Web';
-        }
-    }
 	
 	
 	/**
@@ -646,7 +591,7 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 		//是否需要3D验证
 		$is_3d = 0;
 		//获取3D功能下各个币种的金额
-		$currencies_value = $this->config->get('op_wechatpay_currencies_value');
+		$currencies_value = $this->config->get('op_creditcard_currencies_value');
 	
 		//判断金额是否为空
 		if(isset($currencies_value[$order_currency])){
@@ -663,7 +608,7 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 
 	
 		//获取3D功能下国家列表
-		$countries_3d = $this->config->get('op_wechatpay_country_array');
+		$countries_3d = $this->config->get('op_creditcard_country_array');
 
 		if(isset($countries_3d)){
 			//账单国
@@ -690,16 +635,16 @@ class ControllerExtensionPaymentOPWechatPay extends Controller {
 		if($is_3d ==  0){
 	
 			//终端号
-			$terminal = $this->config->get('op_wechatpay_terminal');
+			$terminal = $this->config->get('op_creditcard_terminal');
 			//securecode
-			$securecode = $this->config->get('op_wechatpay_securecode');
+			$securecode = $this->config->get('op_creditcard_securecode');
 			
 		}elseif($is_3d == 1){
 					
 			//3D终端号
-			$terminal= $this->config->get('op_wechatpay_3d_terminal');	
+			$terminal= $this->config->get('op_creditcard_3d_terminal');	
 			//3D securecode
-			$securecode = $this->config->get('op_wechatpay_3d_securecode');
+			$securecode = $this->config->get('op_creditcard_3d_securecode');
 			//是3D交易
 			$_SESSION['is_3d'] = 1;
 		}

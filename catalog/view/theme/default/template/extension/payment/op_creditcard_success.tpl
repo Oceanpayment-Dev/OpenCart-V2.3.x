@@ -18,17 +18,17 @@ function auto(){
   <h1><?php echo $heading_title; ?></h1>
   <p><?php echo $text_response; ?></p>
   <div style="border: 1px solid #DDDDDD; margin-bottom: 20px; width: 350px; margin-left: auto; margin-right: auto;">
-    <wechatpay ITEM=banner>
+    <creditcard ITEM=banner>
   </div>
   <p><?php echo $text_success; ?></p>
   <p style="color:green"><?php echo $payment_details; ?></p>
   <p><?php echo 'Your Order No. is:'.$text_order_number; ?></p>
-  <?php if($op_wechatpay_location == 1) { ?>
-  <p><?php echo 'Outlet Location:'.$op_wechatpay_locations; ?></p>
+  <?php if($op_creditcard_location == 1) { ?>
+  <p><?php echo 'Outlet Location:'.$op_creditcard_locations; ?></p>
   <?php  }?>
 
-  <?php if($op_wechatpay_location == 1) { ?>
-  <p><?php echo 'Entity:'.$op_wechatpay_entitys; ?></p>
+  <?php if($op_creditcard_location == 1) { ?>
+  <p><?php echo 'Entity:'.$op_creditcard_entitys; ?></p>
   <?php  }?>
 
   <p><?php echo $text_success_wait; ?></p>

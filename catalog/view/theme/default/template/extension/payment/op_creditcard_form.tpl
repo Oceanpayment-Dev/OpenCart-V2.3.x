@@ -3,7 +3,7 @@
         <img src="catalog/view/theme/default/image/loading.gif"  />
     </div>
 </div>
-<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_wechatpay" name="checkout_wechatpay">
+<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_creditcard" name="checkout_creditcard">
   <input type="hidden" name="account" value="<?php echo $account; ?>" />
   <input type="hidden" name="terminal" value="<?php echo $terminal; ?>" />
   <input type="hidden" name="order_number" value="<?php echo $order_number; ?>" />
@@ -42,6 +42,6 @@
 </form>
 
 <script type="text/javascript">
-	document.getElementById('checkout_wechatpay').submit();
+	document.getElementById('checkout_creditcard').submit();
 </script>
 
