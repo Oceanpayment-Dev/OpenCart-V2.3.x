@@ -34,6 +34,8 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 		$data['text_select_currency'] = $this->language->get('text_select_currency');
 		$data['text_select_all'] = $this->language->get('text_select_all');
 		$data['text_unselect_all'] = $this->language->get('text_unselect_all');
+		$data['text_logs_true'] = $this->language->get('text_logs_true');
+		$data['text_logs_false'] = $this->language->get('text_logs_false');
 		
 		$data['entry_account'] = $this->language->get('entry_account');
 		$data['entry_terminal'] = $this->language->get('entry_terminal');
@@ -60,9 +62,10 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 		$data['button_cancel'] = $this->language->get('button_cancel');
 		
 		$data['entry_location'] = $this->language->get('entry_location');
-        $data['entry_locations'] = $this->language->get('entry_locations');
-        $data['entry_entity'] = $this->language->get('entry_entity');
-        $data['entry_entitys'] = $this->language->get('entry_entitys');
+		$data['entry_locations'] = $this->language->get('entry_locations');
+		$data['entry_entity'] = $this->language->get('entry_entity');
+		$data['entry_entitys'] = $this->language->get('entry_entitys');
+		$data['entry_logs'] = $this->language->get('entry_logs');
 
 		$data['text_show'] = $this->language->get('text_show');
 		$data['text_hide'] = $this->language->get('text_hide');
@@ -193,6 +196,12 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$data['op_klarna_pay_mode'] = $this->request->post['op_klarna_pay_mode'];
 		} else {
 			$data['op_klarna_pay_mode'] = $this->config->get('op_klarna_pay_mode');
+		}
+		
+		if (isset($this->request->post['op_klarna_logs'])) {
+			$data['op_klarna_logs'] = $this->request->post['op_klarna_logs'];
+		} else {
+			$data['op_klarna_logs'] = $this->config->get('op_klarna_logs');
 		}
 		
 		if (isset($this->request->post['op_klarna_default_order_status_id'])) {
