@@ -194,7 +194,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$data['ship_zip'] = $ship_zip;
 			
 			//产品名称
-			$productName = $productDetails['productName'];
+			$productName = mb_substr($productDetails['productName'],0,100);
 			$data['productName'] = $productName;
 			
 			//产品SKU
