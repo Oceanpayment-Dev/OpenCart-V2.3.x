@@ -1,6 +1,6 @@
 <?php
 
-class ControllerExtensionPaymentOPKlarna extends Controller {
+class ControllerExtensionPaymentOPFps extends Controller {
 	
 	const PUSH 			= "[PUSH]";
 	const BrowserReturn = "[Browser Return]";	
@@ -12,16 +12,16 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 		
 		
 		$data['button_confirm'] = $this->language->get('button_confirm');
-		$data['action'] = 'index.php?route=extension/payment/op_klarna/op_klarna_form';
+		$data['action'] = 'index.php?route=extension/payment/op_fps/op_fps_form';
 		
 		
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
 		
-		return $this->load->view('extension/payment/op_klarna.tpl', $data);
+		return $this->load->view('extension/payment/op_fps.tpl', $data);
 	}
 
 	
-	public function op_klarna_form() {
+	public function op_fps_form() {
 		
 		$this->load->model('checkout/order');
 		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -30,17 +30,13 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 		//判断是否为空订单
 		if (!empty($order_info)) {
 			
-			$this->load->model('extension/payment/op_klarna');
-			$product_info = $this->model_extension_payment_op_klarna->getOrderProducts($this->session->data['order_id']);
-			
-			//获取订单运费，订单总税，订单商品费用
-			$getOrder_ET = $this->model_extension_payment_op_klarna->getOrderET($this->session->data['order_id']);
-			$tax_rate = round($getOrder_ET['tax_total']/($getOrder_ET['sub_total']-$getOrder_ET['shipping']-$getOrder_ET['tax_total']),2);
+			$this->load->model('extension/payment/op_fps');
+			$product_info = $this->model_extension_payment_op_fps->getOrderProducts($this->session->data['order_id']);
 			
 			//获取订单详情
 			$productDetails = $this->getProductItems($product_info);
 			//获取消费者详情
-			$customer_info = $this->model_extension_payment_op_klarna->getCustomerDetails($order_info['customer_id']);
+			$customer_info = $this->model_extension_payment_op_fps->getCustomerDetails($order_info['customer_id']);
 			
 			
 			if (!$this->request->server['HTTPS']) {
@@ -50,7 +46,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			}
 			
 			//提交网关
-			$action = $this->config->get('op_klarna_transaction');
+			$action = $this->config->get('op_fps_transaction');
 			$data['action'] = $action;
 			
 			//订单号
@@ -64,22 +60,13 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			//币种
 			$order_currency = $order_info['currency_code'];
 			$data['order_currency'] = $order_currency;
-			
-			//非3D交易
-			$_SESSION['is_3d'] = 0;
-			
-			//判断是否启用3D功能
-			if($this->config->get('op_klarna_3d') == 1){
-				//检验是否需要3D验证
-				$validate_arr = $this->validate3D($order_currency, $order_amount, $order_info);							
-			}else{
-				$validate_arr['terminal'] = $this->config->get('op_klarna_terminal');
-				$validate_arr['securecode'] = $this->config->get('op_klarna_securecode');
-			}
-			
+
+			$validate_arr['terminal'] = $this->config->get('op_fps_terminal');
+			$validate_arr['securecode'] = $this->config->get('op_fps_securecode');
+
 		
 			//商户号
-			$account = $this->config->get('op_klarna_account');
+			$account = $this->config->get('op_fps_account');
 			$data['account'] = $account;
 				
 			//终端号
@@ -91,11 +78,11 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			
 			
 			//返回地址
-			$backUrl = $base_url.'index.php?route=extension/payment/op_klarna/callback';
+			$backUrl = $base_url.'index.php?route=extension/payment/op_fps/callback';
 			$data['backUrl'] = $backUrl;
 			
 			//服务器响应地址
-			$noticeUrl = $base_url.'index.php?route=extension/payment/op_klarna/notice';
+			$noticeUrl = $base_url.'index.php?route=extension/payment/op_fps/notice';
 			$data['noticeUrl'] = $noticeUrl;
 			
 			//备注
@@ -103,7 +90,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$data['order_notes'] = $_COOKIE['PHPSESSID'];
 			
 			//支付方式
-			$methods = "";
+			$methods = 'FPS';
 			$data['methods'] = $methods;
 			
 			//账单人名
@@ -151,50 +138,43 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$data['signValue'] = $signValue;
 				
 			//收货人名
-			$ship_firstName = $order_info['shipping_firstname']?$order_info['shipping_firstname']:$this->OceanHtmlSpecialChars($order_info['payment_firstname']);
+			$ship_firstName = $order_info['shipping_firstname'];
 			$data['ship_firstName'] = $ship_firstName;
 			
 			//收货人姓
-			$ship_lastName = $order_info['shipping_lastname']?$order_info['shipping_lastname']:$this->OceanHtmlSpecialChars($order_info['payment_lastname']);
+			$ship_lastName = $order_info['shipping_lastname'];
 			$data['ship_lastName'] = $ship_lastName;
 			
 			//收货人手机
-			$ship_phone = $order_info['telephone']?$order_info['telephone']:$order_info['telephone'];
+			$ship_phone = $order_info['telephone'];
 			$data['ship_phone'] = $ship_phone;
 				
 			//收货人国家
-			$ship_country = $order_info['shipping_iso_code_2']?$order_info['shipping_iso_code_2']:$order_info['payment_iso_code_2'];
+			$ship_country = $order_info['shipping_iso_code_2'];
 			$data['ship_country'] = $ship_country;
 				
 			//收货人州
-			$ship_state = $order_info['shipping_zone']?$order_info['shipping_zone']:$order_info['payment_zone'];
+			$ship_state = $order_info['shipping_zone'];
 			$data['ship_state'] = $ship_state;
 				
 			//收货人城市
-			$ship_city = $order_info['shipping_city']?$order_info['payment_city']:$order_info['payment_city'];
+			$ship_city = $order_info['shipping_city'];
 			$data['ship_city'] = $ship_city;
 				
 			//收货人地址
-			if ($order_info['shipping_address_2'] || $order_info['shipping_address_1']) {
-				if(!$order_info['shipping_address_2'] && $order_info['shipping_address_1']){
-					$ship_addr = $order_info['shipping_address_1'];
-				}else if($order_info['shipping_address_2'] && !$order_info['shipping_address_1']){
-					$ship_addr = $order_info['shipping_address_'];
-				}else{
-					$ship_addr = $order_info['shipping_address_1'] . ',' . $order_info['shipping_address_2'];
-				}
-				
-			} else{
-				$ship_addr = $billing_address;
+			if (!$order_info['shipping_address_2']) {
+				$ship_addr = $order_info['shipping_address_1'] ;
+			} else {
+				$ship_addr = $order_info['shipping_address_1'] . ',' . $order_info['shipping_address_2'];
 			}
 			$data['ship_addr'] = $ship_addr;
 				
 			//收货人邮编
-			$ship_zip = $order_info['shipping_postcode']?$order_info['shipping_postcode']:$order_info['payment_postcode'];
+			$ship_zip = $order_info['shipping_postcode'];
 			$data['ship_zip'] = $ship_zip;
 			
 			//产品名称
-			$productName = mb_substr($productDetails['productName'],0,100);
+			$productName = $productDetails['productName'];
 			$data['productName'] = $productName;
 			
 			//产品SKU
@@ -209,62 +189,6 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$cart_info = 'opencart2.0 above';
 			$data['cart_info'] = $cart_info;
 			
-			$itemList = '{
-				"0":{
-					"type":"1",
-					"title":"'.$productName.'",
-					"sku":"'.$productSku.'",
-					"price":"'.round($getOrder_ET['sub_total']-$getOrder_ET['shipping']-$getOrder_ET['tax_total'],2).'",
-					"quantity":"1",
-					"total_amount":"'.round($getOrder_ET['sub_total']-$getOrder_ET['shipping']-$getOrder_ET['tax_total'],2).'",
-					"taxRate":"'.$tax_rate.'",
-					"taxPrice":"'.round(($getOrder_ET['sub_total']-$getOrder_ET['shipping'])*$tax_rate,2).'",
-					"image_url":"",
-					"product_url":"",
-					"remark":""
-				},
-				"1":{
-					"type":"3",
-					"title":"折扣",
-					"sku":"'.$productSku.'",
-					"price":"0",
-					"quantity":"0",
-					"total_amount":"0",
-					"taxRate":"0",
-					"taxPrice":"0",
-					"image_url":"",
-					"product_url":"",
-					"remark":""
-				},
-				"2":{
-					"type":"4",
-					"title":"运费",
-					"sku":"'.$productSku.'",
-					"price":"'.$getOrder_ET['shipping'].'",
-					"quantity":"1",
-					"total_amount":"'.$getOrder_ET['shipping'].'",
-					"taxRate":"1",
-					"taxPrice":"'.$getOrder_ET['shipping'].'",
-					"image_url":"",
-					"product_url":"",
-					"remark":""
-				},
-				"3":{
-					"type":"5",
-					"title":"税费",
-					"sku":"'.$productSku.'",
-					"price":"'.$getOrder_ET['tax_total'].'",
-					"quantity":"1",
-					"total_amount":"'.$getOrder_ET['tax_total'].'",
-					"taxRate":"1",
-					"taxPrice":"'.$getOrder_ET['tax_total'].'",
-					"image_url":"",
-					"product_url":"",
-					"remark":""
-				}
-			}'; 
-			$data['itemList'] = $itemList;
-
 			//API版本
 			$cart_api = 'V1.7.1';
 			$data['cart_api'] = $cart_api;
@@ -317,7 +241,6 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 					"productName = "       .$productName . "\r\n".
 					"productSku = "        .$productSku . "\r\n".
 					"productNum = "        .$productNum . "\r\n".
-					"itemList = "          .$itemList . "\r\n".
 					"cart_info = "         .$cart_info . "\r\n".
 					"cart_api = "          .$cart_api . "\r\n".
 					"order_notes = "       .$order_notes . "\r\n".
@@ -348,12 +271,12 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$data['header'] = $this->load->controller('common/header');
 			
 			//支付模式Pay Mode
-			if($this->config->get('op_klarna_pay_mode') == 1){
+			if($this->config->get('op_fps_pay_mode') == 1){
 				//内嵌Iframe
-				$this->response->setOutput($this->load->view('extension/payment/op_klarna_iframe.tpl', $data));	
+				$this->response->setOutput($this->load->view('extension/payment/op_fps_iframe.tpl', $data));
 			}else{
 				//跳转Redirect
-				$this->response->setOutput($this->load->view('extension/payment/op_klarna_form.tpl', $data));
+				$this->response->setOutput($this->load->view('extension/payment/op_fps_form.tpl', $data));
 			}
 
 		}else{		
@@ -366,7 +289,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 	
 	public function callback() {
 		if (isset($this->request->post['order_number']) && !(empty($this->request->post['order_number']))) {
-			$this->language->load('extension/payment/op_klarna');
+			$this->language->load('extension/payment/op_fps');
 		
 			$data['title'] = sprintf($this->language->get('heading_title'), $this->config->get('config_name'));
 
@@ -395,7 +318,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			
 	
 			//返回信息
-			$account = $this->config->get('op_klarna_account');
+			$account = $this->config->get('op_fps_account');
 			$terminal = $this->request->post['terminal'];
 			$response_type = $this->request->post['response_type'];
 			$payment_id = $this->request->post['payment_id'];
@@ -422,32 +345,26 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$data['payment_solutions'] = $payment_solutions;
 			
 			
-			//匹配终端号   记录是否3D交易
-			if($terminal == $this->config->get('op_klarna_terminal')){
+			//匹配终端号
+			if($terminal == $this->config->get('op_fps_terminal')){
 				//普通终端号
-				$securecode = $this->config->get('op_klarna_securecode');		
-				$text_is_3d = '';
-			}elseif($terminal == $this->config->get('op_klarna_3d_terminal')){
-				//3D终端号
-				$securecode = $this->config->get('op_klarna_3d_securecode');	
-				$text_is_3d = '[3D] ';
-			}else{				
-				$securecode = '';	
-				$text_is_3d = '';
+				$securecode = $this->config->get('op_fps_securecode');
+			}else{
+				$securecode = '';
 			}
 			
-			if($this->config->get('op_klarna_location') == '1'){
-				$data['op_klarna_locations']  =	$this->config->get('op_klarna_locations');
-                $data['op_klarna_location']   = 1;
+			if($this->config->get('op_fps_location') == '1'){
+				$data['op_fps_locations']  =	$this->config->get('op_fps_locations');
+                $data['op_fps_location']   = 1;
 			}else{
-                $data['op_klarna_location']   = 0;
+                $data['op_fps_location']   = 0;
 			}
 
-            if($this->config->get('op_klarna_entity') == '1'){
-                $data['op_klarna_entitys']  =	 $this->config->get('op_klarna_entitys');
-                $data['op_klarna_entity']   = 1;
+            if($this->config->get('op_fps_entity') == '1'){
+                $data['op_fps_entitys']  =	 $this->config->get('op_fps_entitys');
+                $data['op_fps_entity']   = 1;
 			}else{
-                $data['op_klarna_entity']   = 0;
+                $data['op_fps_entity']   = 0;
 			}
 
 				
@@ -457,14 +374,14 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$local_signValue = hash("sha256",$account.$terminal.$order_number.$order_currency.$order_amount.$order_notes.$card_number.
 					$payment_id.$payment_authType.$payment_status.$payment_details.$payment_risk.$securecode);
 			
-			if($this->config->get('op_klarna_logs') == 'True') {
-				//记录浏览器返回日志
-				$this->returnLog(self::BrowserReturn);
-			}
+
+			//记录浏览器返回日志
+			$this->returnLog(self::BrowserReturn);
+
 
 	
 			
-			$message = self::BrowserReturn . $text_is_3d;
+			$message = self::BrowserReturn;
 			if ($payment_status == 1){           //交易状态
 				$message .= 'PAY:Success.';
 			}elseif ($payment_status == 0){
@@ -477,7 +394,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 				}
 			}
 			$message .= ' | ' . $payment_id . ' | ' . $order_currency . ':' . $order_amount . ' | ' . $payment_details . "\n";
-		    header("Set-Cookie:".$order_notes."path=/");
+			header("Set-Cookie:".$order_notes."path=/");
 			$this->load->model('checkout/order');
 			if (strtoupper($local_signValue) == strtoupper($back_signValue)) {     //数据签名对比
 
@@ -486,7 +403,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 					if($ErrorCode == 20061){	 
 						//排除订单号重复(20061)的交易
 						$data['continue'] = $this->url->link('checkout/cart');
-						$this->response->setOutput($this->load->view('extension/payment/op_klarna_failure.tpl', $data));
+						$this->response->setOutput($this->load->view('extension/payment/op_fps_failure.tpl', $data));
 
 					}else{
 						if ($payment_status == 1 ){  
@@ -494,10 +411,10 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 							//清除coupon
 							unset($this->session->data['coupon']);
 							
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_klarna_success_order_status_id'), $message, true);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_fps_success_order_status_id'), $message, true);
 							
 							$data['continue'] = HTTPS_SERVER . 'index.php?route=checkout/success';
-							$this->response->setOutput($this->load->view('extension/payment/op_klarna_success.tpl', $data));
+							$this->response->setOutput($this->load->view('extension/payment/op_fps_success.tpl', $data));
 
 						}elseif ($payment_status == -1 ){   
 							//交易待处理 
@@ -505,17 +422,17 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 							if($payment_authType == 1){						
 								$message .= '(Pre-auth)';
 							}
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_klarna_pending_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_fps_pending_order_status_id'), $message, false);
 								
 							$data['continue'] = $this->url->link('checkout/cart');
-							$this->response->setOutput($this->load->view('extension/payment/op_klarna_success.tpl', $data));
+							$this->response->setOutput($this->load->view('extension/payment/op_fps_success.tpl', $data));
 	
 						}else{     
 							//交易失败
-							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_klarna_failed_order_status_id'), $message, false);
+							$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_fps_failed_order_status_id'), $message, false);
 							
 							$data['continue'] = $this->url->link('checkout/cart');
-							$this->response->setOutput($this->load->view('extension/payment/op_klarna_failure.tpl', $data));
+							$this->response->setOutput($this->load->view('extension/payment/op_fps_failure.tpl', $data));
 
 						}
  					}								
@@ -523,10 +440,10 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			
 			}else {     
 				//数据签名对比失败
-				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_klarna_failed_order_status_id'), $message, false);
+				$this->model_checkout_order->addOrderHistory($this->request->post['order_number'], $this->config->get('op_fps_failed_order_status_id'), $message, false);
 							
 				$data['continue'] = $this->url->link('checkout/cart');
-				$this->response->setOutput($this->load->view('extension/payment/op_klarna_failure.tpl', $data));
+				$this->response->setOutput($this->load->view('extension/payment/op_fps_failure.tpl', $data));
 					
 			}
 		}
@@ -567,18 +484,12 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 			$_REQUEST['payment_solutions']= (string)$xml->payment_solutions;
 				
 					
-			//匹配终端号   记录是否3D交易
-			if($_REQUEST['terminal'] == $this->config->get('op_klarna_terminal')){
+			//匹配终端号
+			if($_REQUEST['terminal'] == $this->config->get('op_fps_terminal')){
 				//普通终端号
-				$securecode = $this->config->get('op_klarna_securecode');
-				$text_is_3d = '';
-			}elseif($_REQUEST['terminal'] == $this->config->get('op_klarna_3d_terminal')){
-				//3D终端号
-				$securecode = $this->config->get('op_klarna_3d_securecode');
-				$text_is_3d = '[3D] ';
+				$securecode = $this->config->get('op_fps_securecode');
 			}else{
 				$securecode = '';
-				$text_is_3d = '';
 			}
 			
 
@@ -587,10 +498,9 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 		
 		
 		if($_REQUEST['response_type'] == 1){
-			if($this->config->get('op_klarna_logs') == 'True') {
+			
 			//记录交易推送日志
 			$this->returnLog(self::PUSH);
-			}
 			
 			//签名数据
 			$local_signValue = hash("sha256",$_REQUEST['account'].$_REQUEST['terminal'].$_REQUEST['order_number'].$_REQUEST['order_currency'].$_REQUEST['order_amount'].$_REQUEST['order_notes'].$_REQUEST['card_number'].
@@ -607,7 +517,7 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 				$this->load->model('checkout/order');
 				
 
-				$message = self::PUSH . $text_is_3d;
+				$message = self::PUSH;
 				if ($_REQUEST['payment_status'] == 1){           //交易状态
 					$message .= 'PAY:Success.';
 				}elseif ($_REQUEST['payment_status'] == 0){
@@ -627,17 +537,17 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 				}else{
 					if ($_REQUEST['payment_status'] == 1 ){
 						//交易成功
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_klarna_success_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_fps_success_order_status_id'), $message, false);
 					}elseif ($_REQUEST['payment_status'] == -1){
 						//交易待处理
 						//是否预授权交易
 						if($_REQUEST['payment_authType'] == 1){
 							$message .= '(Pre-auth)';
 						}
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_klarna_pending_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_fps_pending_order_status_id'), $message, false);
 					}else{
 						//交易失败
-						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_klarna_failed_order_status_id'), $message, false);
+						$this->model_checkout_order->addOrderHistory($_REQUEST['order_number'], $this->config->get('op_fps_failed_order_status_id'), $message, false);
 					}
 				}
 				
@@ -650,89 +560,43 @@ class ControllerExtensionPaymentOPKlarna extends Controller {
 	
 			
 	}
-	
-	
-	/**
-	 * 检验是否需要3D验证
-	 */
-	public function validate3D($order_currency, $order_amount, $order_info){
-		
-		//是否需要3D验证
-		$is_3d = 0;
-		//获取3D功能下各个币种的金额
-		$currencies_value = $this->config->get('op_klarna_currencies_value');
-	
-		//判断金额是否为空
-		if(isset($currencies_value[$order_currency])){
-				
-			//判断3D金额不为空
-			//判断订单金额是否大于3d设定值
-			if($order_amount >= $currencies_value[$order_currency]){
-				//需要3D
-				$is_3d = 1;
-			}
-				
-		}
-		
 
-	
-		//获取3D功能下国家列表
-		$countries_3d = $this->config->get('op_klarna_country_array');
+/**
+     * 检验是否移动端
+     */
+	function isMobile(){
+        // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
+        if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
+            return true;
+        }
+        // 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
+        if (isset ($_SERVER['HTTP_VIA'])){
+            // 找不到为flase,否则为true
+            return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
+        }
+        // 判断手机发送的客户端标志
+        if (isset ($_SERVER['HTTP_USER_AGENT'])){
+            $clientkeywords = array (
+                'nokia','sony','ericsson','mot','samsung','htc','sgh','lg','sharp','sie-','philips','panasonic','alcatel',
+                'lenovo','iphone','ipod','blackberry','meizu','android','netfront','symbian','ucweb','windowsce','palm',
+                'operamini','operamobi','openwave','nexusone','cldc','midp','wap','mobile'
+            );
+            // 从HTTP_USER_AGENT中查找手机浏览器的关键字
+            if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))){
+                return true;
+            }
+        }
+        // 判断协议
+        if (isset ($_SERVER['HTTP_ACCEPT'])){
+            // 如果只支持wml并且不支持html那一定是移动设备
+            // 如果支持wml和html但是wml在html之前则是移动设备
+            if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))){
+                return true;
+            }
+        }
+        return false;
+    }
 
-		if(isset($countries_3d)){
-			//账单国
-			$billing_country_id = $order_info['payment_country_id'];
-			//收货国
-			$ship_country_id = $order_info['shipping_country_id'];
-			
-			
-			//判断账单国是否处于3D国家列表
-			if (in_array($billing_country_id , $countries_3d)){
-				$is_3d = 1;
-			}
-			//判断收货国是否处于3D国家列表
-			if (in_array($ship_country_id , $countries_3d)){
-				$is_3d = 1;
-			}
-		}
-		
-			
-		
-		
-	
-		
-		if($is_3d ==  0){
-	
-			//终端号
-			$terminal = $this->config->get('op_klarna_terminal');
-			//securecode
-			$securecode = $this->config->get('op_klarna_securecode');
-			
-		}elseif($is_3d == 1){
-					
-			//3D终端号
-			$terminal= $this->config->get('op_klarna_3d_terminal');	
-			//3D securecode
-			$securecode = $this->config->get('op_klarna_3d_securecode');
-			//是3D交易
-			$_SESSION['is_3d'] = 1;
-		}
-		
-
-		$validate_arr['terminal'] = $terminal;
-		$validate_arr['securecode'] = $securecode;
-		
-		return $validate_arr;
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * return log

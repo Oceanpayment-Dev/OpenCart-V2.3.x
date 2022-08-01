@@ -1,13 +1,13 @@
 <?php echo $header; ?>
 <div class="container">
 	<div class="row"> 
-		<div id="content" class="col-sm-12" style=" min-height: 800px; ">
+		<div id="content" class="col-sm-12" style=" min-height: 310px; ">
 			<div id="loading" style="position: relative;">
 			    <div style="position:absolute; top:100px; left:45%; z-index:3;" >
 			        <img src="catalog/view/theme/default/image/loading.gif"  />
 			    </div>
 			</div>
-			<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_klarna" name="checkout_klarna">
+			<form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_fps" name="checkout_fps">
 			  <input type="hidden" name="account" value="<?php echo $account; ?>" />
 			  <input type="hidden" name="terminal" value="<?php echo $terminal; ?>" />
 			  <input type="hidden" name="order_number" value="<?php echo $order_number; ?>" />
@@ -35,7 +35,6 @@
 			  <input type="hidden" name="ship_state" value="<?php echo $ship_state; ?>" />
 			  <input type="hidden" name="ship_country" value="<?php echo $ship_country; ?>" />
 			  <input type="hidden" name="ship_addr" value="<?php echo $ship_addr; ?>" />
-			  <input type="hidden" name="itemList" value='<?php echo $itemList; ?>' />
 			  <input type="hidden" name="productName" value="<?php echo $productName; ?>" />
 			  <input type="hidden" name="productSku" value="<?php echo $productSku; ?>" />
 			  <input type="hidden" name="productNum" value="<?php echo $productNum; ?>" />
@@ -46,19 +45,19 @@
 			  <input type="hidden" name="ET_COUPONS" value="<?php echo $ET_COUPONS; ?>" />
 			</form>
 			
-			<iframe width="100%" height="750" scrolling="auto" name="ifrm_klarna_checkout" id="ifrm_klarna_checkout" style="border:none; margin: 0 auto; overflow:hidden;"></iframe>
+			<iframe width="100%" height="750" scrolling="auto" name="ifrm_fps_checkout" id="ifrm_fps_checkout" style="border:none; margin: 0 auto; overflow:hidden;"></iframe>
 			
 			<script type="text/javascript">
 				<?php if($_SESSION['pages'] == 0){?>
 				if (window.XMLHttpRequest) {
-				document.checkout_klarna.target="ifrm_klarna_checkout";
+				document.checkout_fps.target="ifrm_fps_checkout";
 				}
 				<?php }?>
-				document.checkout_klarna.submit();
+				document.checkout_fps.submit();
 				window.status = "<?php echo $action;?>";
 			</script>
 			<script type="text/javascript">
-			    var ifrm_cc  = document.getElementById("ifrm_klarna_checkout");
+			    var ifrm_cc  = document.getElementById("ifrm_fps_checkout");
 			    var loading  = document.getElementById("loading");
 			    if (ifrm_cc.attachEvent){
 			        ifrm_cc.attachEvent("onload", function(){

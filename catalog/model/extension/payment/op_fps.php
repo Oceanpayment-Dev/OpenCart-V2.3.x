@@ -1,22 +1,14 @@
 <?php 
-/*
- * @Descripttion: 
- * @version: 
- * @Author: Steven
- * @Date: 2021-06-15 10:45:49
- * @LastEditors: Steven
- * @LastEditTime: 2021-06-15 14:02:51
- */
-class ModelExtensionPaymentOPKlarna extends Model {
+class ModelExtensionPaymentOPFps extends Model {
 	private $_limit = ',';
 	
   	public function getMethod($address) {
-		$this->load->language('extension/payment/op_klarna');
+		$this->load->language('extension/payment/op_fps');
 		
-		if ($this->config->get('op_klarna_status')) {
-      		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('op_klarna_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
+		if ($this->config->get('op_fps_status')) {
+      		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('op_fps_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 			
-			if (!$this->config->get('op_klarna_geo_zone_id')) {
+			if (!$this->config->get('op_fps_geo_zone_id')) {
         		$status = true;
       		} elseif ($query->num_rows) {
       		  	$status = true;
@@ -31,10 +23,10 @@ class ModelExtensionPaymentOPKlarna extends Model {
 	
 		if ($status) {  
       		$method_data = array( 
-        		'code'         => 'op_klarna',
+        		'code'         => 'op_fps',
         		'title'      => $this->language->get('text_title'),
       			'terms'      => '',
-				'sort_order' => $this->config->get('op_klarna_sort_order')
+				'sort_order' => $this->config->get('op_fps_sort_order')
       		);
     	}
    
@@ -56,11 +48,6 @@ class ModelExtensionPaymentOPKlarna extends Model {
   		$query = $this->db->query("SELECT `value` AS `shipping` FROM `" . DB_PREFIX . "order_total` WHERE `order_id`=".intval($order_id)." AND `code`='shipping'");
   		$shipping_info = $query->row;
   		
-		$query1 = $this->db->query("SELECT `value` AS `tax_total` FROM `" . DB_PREFIX . "order_total` WHERE `order_id`=".intval($order_id)." AND `code`='tax'");
-
-		$query = $this->db->query("SELECT `value` AS `sub_total` FROM `" . DB_PREFIX . "order_total` WHERE `order_id`=".intval($order_id)." AND `code`='total'");
-		$sub_total = $query->row;
-
   		$query = $this->db->query("SELECT MIN(price) AS min_price,MAX(price) AS max_price FROM `" . DB_PREFIX . "product`");
   		$price_type = $query->row;
   		
@@ -73,19 +60,7 @@ class ModelExtensionPaymentOPKlarna extends Model {
   			$product_info['price_info'] .= $product['price'].$this->_limit;
   		}
   		
-		  $shipping_info = $shipping_info?$shipping_info:array("shipping"=>"0");
-		
-		  $tax_total['tax_total'] = '0.00';
-		  if($query1->num_rows > 0){
-			  foreach($query1->rows as $key=>$itme){
-				  $tax_total['tax_total'] += $itme['tax_total'];
-			  }
-		  }else{
-			  $tax_total = $query1->row?$query1->row:$tax_total;
-		  }
-
-  		// return array_merge($order_info,$shipping_info,$product_info,$customer_info,$price_type);
-		  return array_merge($order_info,$shipping_info,$tax_total,$sub_total,$product_info,$customer_info,$price_type);
+  		return array_merge($order_info,$shipping_info,$product_info,$customer_info,$price_type);
   	}
   	
   	public function getPriceTypeET()
