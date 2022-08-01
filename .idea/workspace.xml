@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c2587390-efc4-4ead-a148-e73c085e7536" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Alipay" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="D:\phpstudy_pro\WWW\dev_git\OpenCart-V2.3.x\.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="27B7zxdA5Ls4GEZhYSka5deIc85" />
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Magento-V2.x.x" />
+    <property name="settings.editor.selected.configurable" value="settings.github" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\susanwan\AppData\Roaming\Subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c2587390-efc4-4ead-a148-e73c085e7536" name="Default Changelist" comment="" />
+      <created>1648781891444</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648781891444</updated>
+      <workItem from="1648781892536" duration="967000" />
+      <workItem from="1652696554209" duration="775000" />
+      <workItem from="1652749432990" duration="9204000" />
+      <workItem from="1656988656086" duration="6188000" />
+      <workItem from="1659339822329" duration="2873000" />
+    </task>
+    <task id="LOCAL-00001" summary="Alipay">
+      <created>1648782068467</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1648782068467</updated>
+    </task>
+    <task id="LOCAL-00002" summary="AlipayHK">
+      <created>1648782361965</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1648782361965</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Klarna">
+      <created>1648782525962</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1648782525962</updated>
+    </task>
+    <task id="LOCAL-00004" summary="WechatPay">
+      <created>1648782641179</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1648782641179</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Credit Card">
+      <created>1648782836723</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1648782836723</updated>
+    </task>
+    <task id="LOCAL-00006" summary="update setting">
+      <created>1652750548345</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1652750548345</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update setting">
+      <created>1656999791341</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1656999791341</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Alipay" />
+    <MESSAGE value="AlipayHK" />
+    <MESSAGE value="Klarna" />
+    <MESSAGE value="WechatPay" />
+    <MESSAGE value="Credit Card" />
+    <MESSAGE value="update setting" />
+    <option name="LAST_COMMIT_MESSAGE" value="update setting" />
+  </component>
+</project>
