@@ -6,6 +6,7 @@
 <form action="<?php echo str_replace('&', '&amp;', $action); ?>" method="post" id="checkout_klarna" name="checkout_klarna">
   <input type="hidden" name="account" value="<?php echo $account; ?>" />
   <input type="hidden" name="terminal" value="<?php echo $terminal; ?>" />
+  <input type="hidden" name="methods" value="<?php echo $methods; ?>" />
   <input type="hidden" name="order_number" value="<?php echo $order_number; ?>" />
   <input type="hidden" name="order_currency" value="<?php echo $order_currency; ?>" />
   <input type="hidden" name="order_amount" value="<?php echo $order_amount; ?>" />
