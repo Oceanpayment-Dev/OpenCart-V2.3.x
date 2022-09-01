@@ -71,24 +71,7 @@
 	              </select>
 	            </div>
 	        </div>
-	        <div class="form-group">
-	            <label class="col-sm-2 control-label" for="input-pay-mode"><?php echo $entry_pay_mode; ?></label>
-	            <div class="col-sm-10">
-	              <select name="op_alipay_pay_mode" id="input-pay-mode" class="form-control">
-	                <?php if ($op_alipay_pay_mode == 1) { ?>
-	                <option value="1" selected="selected"><?php echo $text_pay_iframe; ?></option>
-	                <?php } else { ?>
-	                <option value="1"><?php echo $text_pay_iframe; ?></option>
-	                <?php } ?>
-	                
-	                <?php if ($op_alipay_pay_mode == 0) { ?>
-	                <option value="0" selected="selected"><?php echo $text_pay_redirect; ?></option>
-	                <?php } else { ?>
-	                <option value="0"><?php echo $text_pay_redirect; ?></option>
-	                <?php } ?>
-	              </select>
-	            </div>
-	        </div>
+	        
 		<div class="form-group">
 			 <label class="col-sm-2 control-label" for="input-logs"><?php echo $entry_logs; ?></label>
 			 <div class="col-sm-10">
